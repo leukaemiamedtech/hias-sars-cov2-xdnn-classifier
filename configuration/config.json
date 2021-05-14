@@ -1,0 +1,58 @@
+{
+    "agent": {
+        "cores": 8,
+        "server": "",
+        "port": 1234,
+        "params": [
+            "train",
+            "classify",
+            "server",
+            "classify_http"
+        ]
+    },
+    "data": {
+        "dim": 224,
+        "file_type": ".png",
+        "labels": [0, 1],
+        "test": "model/data/test",
+        "test_data": [
+            "Covid (1128).png",
+            "Covid (1183).png",
+            "Covid (1239).png",
+            "Covid (329).png",
+            "Covid (371).png",
+            "Covid (55).png",
+            "Covid (552).png",
+            "Covid (7).png",
+            "Covid (842).png",
+            "Covid (89).png",
+            "Non-Covid (1114).png",
+            "Non-Covid (1164).png",
+            "Non-Covid (1205).png",
+            "Non-Covid (217).png",
+            "Non-Covid (457).png",
+            "Non-Covid (56).png",
+            "Non-Covid (6).png",
+            "Non-Covid (715).png",
+            "Non-Covid (822).png",
+            "Non-Covid (955).png"
+
+        ],
+        "train_dir": "model/data/train",
+        "valid_types": [
+            ".JPG",
+            ".JPEG",
+            ".PNG",
+            ".GIF",
+            ".jpg",
+            ".jpeg",
+            ".png",
+            ".gif"
+        ]
+    },
+    "model": {
+        "features": "model/features",
+        "x_feature": "model/features/data_df_X_train_lite.csv",
+        "y_feature": "model/features/data_df_y_train_lite.csv"
+    }
+}
