@@ -12,6 +12,7 @@
 - [Introduction](#introduction)
 - [DISCLAIMER](#disclaimer)
 - [Motivation](#motivation)
+- [GETTING STARTED](#getting-started)
 - [Contributing](#contributing)
   - [Contributors](#contributors)
 - [Versioning](#versioning)
@@ -73,13 +74,19 @@ Developers that have contributed to this repository have experience in using Art
 
 &nbsp;
 
+# GETTING STARTED
+
+Ready to get started ? Head over to the [Getting Started guide](documentation/getting-started.md) for instructions on how to download/install and setup the Acute Lymphoblastic Leukemia oneAPI Classifier 2021.
+
+&nbsp;
+
 # Contributing
 The Asociación de Investigacion en Inteligencia Artificial Para la Leucemia Peter Moss encourages and welcomes code contributions, bug fixes and enhancements from the Github community.
 
 Please read the [CONTRIBUTING](CONTRIBUTING.md "CONTRIBUTING") document for a full guide to forking our repositories and submitting your pull requests. You will also find information about our code of conduct on this page.
 
 ## Contributors
-- [Nitin Mane](https://www.leukemiaairesearch.com/association/volunteers/nitin-mane "Nitin Mane") - [Asociacion De Investigatcion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") Deep Learning, Aurangabad, India
+- [Nitin Mane](https://www.leukemiaairesearch.com/association/volunteers/nitin-mane "Nitin Mane") - [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") Deep Learning, Aurangabad, India
 
 &nbsp;
 

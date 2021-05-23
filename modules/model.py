@@ -357,7 +357,7 @@ class model(AbstractModel):
 		out1 = Output3['Scores'][0][0]
 		out2 = Output3['Scores'][0][1]
 
-		if out1 > out2:
+		if out1 < out2:
 			prediction = 1
 		else:
 			prediction = 0
@@ -400,7 +400,8 @@ class model(AbstractModel):
 				msg = ""
 				status = ""
 				outcome = ""
-
+				print(prediction)
+				print(testFile)
 				if prediction == 1 and "Non-Covid" in testFile:
 					fp += 1
 					status = "incorrectly"
@@ -454,6 +455,7 @@ class model(AbstractModel):
 		for testFile in os.listdir(self.testing_dir):
 			if os.path.splitext(testFile)[1] in self.valid:
 
+				print(self.testing_dir + "/" + testFile)
 				start = time.time()
 				prediction = self.http_request(self.testing_dir + "/" + testFile)
 				end = time.time()
@@ -464,25 +466,30 @@ class model(AbstractModel):
 				status = ""
 				outcome = ""
 
-				if prediction["Diagnosis"] == "Positive" and "_1." in testFile:
-					tp += 1
-					status = "correctly"
-					outcome = "(True Positive)"
-				elif prediction["Diagnosis"] == "Positive" and "_0." in testFile:
+				print()
+
+				if prediction["Diagnosis"] == "Positive" and "Non-Covid" in testFile:
 					fp += 1
 					status = "incorrectly"
 					outcome = "(False Positive)"
-				elif prediction["Diagnosis"] == "Negative" and "_0." in testFile:
+
+				elif prediction["Diagnosis"] == "Negative" and "Non-Covid" in testFile:
 					tn += 1
 					status = "correctly"
 					outcome = "(True Negative)"
-				elif prediction["Diagnosis"] == "Negative" and "_1." in testFile:
+
+				elif prediction["Diagnosis"] == "Positive" and "Covid" in testFile:
+					tp += 1
+					status = "correctly"
+					outcome = "(True Positive)"
+
+				elif prediction["Diagnosis"] == "Negative" and "Covid" in testFile:
 					fn += 1
 					status = "incorrectly"
 					outcome = "(False Negative)"
 
 				files += 1
-				self.helpers.logger.info("Acute Lymphoblastic Leukemia " + status +
+				self.helpers.logger.info("SARS-CoV-2 " + status +
 								" detected " + outcome + " in " + str(benchmark) + " seconds.")
 
 		self.helpers.logger.info("Images Classified: " + str(files))

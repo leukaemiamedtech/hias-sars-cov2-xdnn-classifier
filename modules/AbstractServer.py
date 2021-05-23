@@ -64,16 +64,6 @@ class AbstractServer(ABC):
 		pass
 
 	@abstractmethod
-	def request(self, img_path):
-		""" Sends image to the inference API endpoint. """
-		pass
-
-	@abstractmethod
 	def start(self, img_path):
-		""" Sends image to the inference API endpoint. """
-		pass
-
-	@abstractmethod
-	def test(self, img_path):
 		""" Sends image to the inference API endpoint. """
 		pass

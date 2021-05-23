@@ -95,8 +95,6 @@ To specify which test images to use modify the [configuration/config.json](../co
 [configuration/config.json](../configuration/config.json "configuration/config.json")  holds the configuration for our application.
 
 - Change **agent->cores** to the number of cores you have on your training computer.
-- Change **agent->server** to the local IP of your training device.
-- Change **agent->port** to a different number.
 
 <details><summary><b>View file contents</b></summary>
 <p>
@@ -105,8 +103,6 @@ To specify which test images to use modify the [configuration/config.json](../co
 {
     "agent": {
         "cores": 8,
-        "server": "",
-        "port": 1234,
         "params": [
             "train",
             "classify",
@@ -178,7 +174,7 @@ We can use metrics to measure the effectiveness of our model. In this network yo
 - Accuracy
 - Precision
 - Recall
-- AUC/ROC
+- F1
 
 These metrics will be displayed and plotted once our model is trained.
 
@@ -192,18 +188,42 @@ python agent.py train
 This tells the application to start training the model.
 
 ## Training Data
-First the training and validation data will be prepared.
+First the training and validation data will be prepared. The program will first move the test data specified in the configuration to the **model/data/test** directory.
 
 ```
-2021-05-14 01:44:46,888 - Agent - INFO - Negative data: 1219
-2021-05-14 01:44:46,888 - Agent - INFO - Positive data: 1242
-2021-05-14 01:44:46,888 - Agent - INFO - Batch: (2461, 4096)
-2021-05-14 01:44:46,888 - Agent - INFO - Labels: (2461,)
-2021-05-14 01:44:46,897 - Agent - INFO - Training data: (1968, 4096)
-2021-05-14 01:44:46,897 - Agent - INFO - Training labels: (1968,)
-2021-05-14 01:44:46,897 - Agent - INFO - Validation data: (493, 4096)
-2021-05-14 01:44:46,898 - Agent - INFO - Validation labels: (493,)
-2021-05-14 01:44:51,213 - Agent - INFO - Data preperation complete.
+2021-05-23 03:29:56,150 - Agent - INFO - model/data/train/Covid (1128).png moved to model/data/test/Covid (1128).png
+2021-05-23 03:29:56,150 - Agent - INFO - model/data/train/Covid (1183).png moved to model/data/test/Covid (1183).png
+2021-05-23 03:29:56,150 - Agent - INFO - model/data/train/Covid (1239).png moved to model/data/test/Covid (1239).png
+2021-05-23 03:29:56,150 - Agent - INFO - model/data/train/Covid (329).png moved to model/data/test/Covid (329).png
+2021-05-23 03:29:56,150 - Agent - INFO - model/data/train/Covid (371).png moved to model/data/test/Covid (371).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Covid (55).png moved to model/data/test/Covid (55).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Covid (552).png moved to model/data/test/Covid (552).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Covid (7).png moved to model/data/test/Covid (7).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Covid (842).png moved to model/data/test/Covid (842).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Covid (89).png moved to model/data/test/Covid (89).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (1114).png moved to model/data/test/Non-Covid (1114).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (1164).png moved to model/data/test/Non-Covid (1164).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (1205).png moved to model/data/test/Non-Covid (1205).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (217).png moved to model/data/test/Non-Covid (217).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (457).png moved to model/data/test/Non-Covid (457).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (56).png moved to model/data/test/Non-Covid (56).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (6).png moved to model/data/test/Non-Covid (6).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (715).png moved to model/data/test/Non-Covid (715).png
+2021-05-23 03:29:56,151 - Agent - INFO - model/data/train/Non-Covid (822).png moved to model/data/test/Non-Covid (822).png
+2021-05-23 03:29:56,152 - Agent - INFO - model/data/train/Non-Covid (955).png moved to model/data/test/Non-Covid (955).png
+```
+Next the training data will be prepared. You will see file name and label for each sample before the
+
+```
+2021-05-23 03:40:53,078 - Agent - INFO - Negative data: 1219
+2021-05-23 03:40:53,078 - Agent - INFO - Positive data: 1242
+2021-05-23 03:40:53,078 - Agent - INFO - Batch: (2461, 4096)
+2021-05-23 03:40:53,078 - Agent - INFO - Labels: (2461,)
+2021-05-23 03:40:53,087 - Agent - INFO - Training data: (1968, 4096)
+2021-05-23 03:40:53,087 - Agent - INFO - Training labels: (1968,)
+2021-05-23 03:40:53,087 - Agent - INFO - Validation data: (493, 4096)
+2021-05-23 03:40:53,087 - Agent - INFO - Validation labels: (493,)
+2021-05-23 03:40:57,618 - Agent - INFO - Data preperation complete.
 ```
 
 ### Model Summary
@@ -211,9 +231,9 @@ First the training and validation data will be prepared.
 Before the model begins training, you will be shown the model summary for the [VGG19 Model](https://github.com/keras-team/keras-applications/blob/master/keras_applications/vgg19.py) that is used for extracting features and data points.
 
 ```
-2021-05-14 01:45:45,504 - Agent - INFO - X train: (1968, 4096)
-2021-05-14 01:45:45,504 - Agent - INFO - Y train: (1968, 2)
-2021-05-14 01:46:24,606 - Agent - INFO - Loaded xDNN Model.
+2021-05-23 03:41:48,932 - Agent - INFO - X train: (1968, 4096)
+2021-05-23 03:41:48,932 - Agent - INFO - Y train: (1968, 2)
+2021-05-23 03:42:27,242 - Agent - INFO - Loaded xDNN Model.
 Model: "model_1"
 _________________________________________________________________
 Layer (type)                 Output Shape              Param #
@@ -272,8 +292,7 @@ Total params: 139,570,240
 Trainable params: 139,570,240
 Non-trainable params: 0
 _________________________________________________________________
-2021-05-14 01:46:24,610 - Agent - INFO - VGG19 Model loaded
-
+2021-05-23 03:42:27,245 - Agent - INFO - VGG19 Model loaded
 ```
 
 ## Training Results
@@ -287,49 +306,46 @@ _Fig 1. Accuracy_
 
 _Fig 2. Precision, Recall and F1_
 
-<img src="../model/plots/confusion-matrix.png" alt="AUC" />
+<img src="../model/plots/confusion_matrix.png" alt="AUC" />
 
 _Fig 3. Confusion Matrix_
 
 ```
-2021-05-14 01:49:27,211 - Agent - INFO - ###################### Results ####################
-2021-05-14 01:49:27,211 - Agent - INFO - Time: 138.88seconds
-2021-05-14 01:49:27,211 - Agent - INFO - Accuracy: 0.9614604462474645
-2021-05-14 01:49:27,212 - Agent - INFO - Precision: 0.9614604462474645
-2021-05-14 01:49:27,213 - Agent - INFO - Recall: 0.9614604462474645
-2021-05-14 01:49:27,214 - Agent - INFO - F1 score: 0.9614604462474645
-2021-05-14 01:49:27,216 - Agent - INFO - Cohens kappa: 0.9228844048177695
-OMP: Info #254: KMP_AFFINITY: pid 10593 tid 10593 thread 0 bound to OS proc set 0
-2021-05-14 01:49:27,504 - Agent - INFO - Confusion Matrix: [[230  14]
- [  5 244]]
+2021-05-23 03:45:30,042 - Agent - INFO - ###################### Results ####################
+2021-05-23 03:45:30,042 - Agent - INFO - Time: 139.48seconds
+2021-05-23 03:45:30,043 - Agent - INFO - Accuracy: 0.9675456389452333
+2021-05-23 03:45:30,044 - Agent - INFO - Precision: 0.9675456389452333
+2021-05-23 03:45:30,044 - Agent - INFO - Recall: 0.9675456389452333
+2021-05-23 03:45:30,045 - Agent - INFO - F1 score: 0.9675456389452332
+2021-05-23 03:45:30,047 - Agent - INFO - Cohens kappa: 0.9350182884634395
+OMP: Info #254: KMP_AFFINITY: pid 8021 tid 8021 thread 0 bound to OS proc set 0
+2021-05-23 03:45:30,333 - Agent - INFO - Confusion Matrix: [[230  10] [  6 247]]
+2021-05-23 03:45:30,333 - Agent - INFO - Normalized Confusion Matrix: [[0.95833333 0.04166667] [0.02371542 0.97628458]]
 
-2021-05-14 01:49:27,504 - Agent - INFO - Normalized Confusion Matrix: [[0.94262295 0.05737705]
- [0.02008032 0.97991968]]
-
-2021-05-14 01:49:27,659 - Agent - INFO - True Positives: 244(49.49290060851927%)
-2021-05-14 01:49:27,659 - Agent - INFO - False Positives: 14(2.839756592292089%)
-2021-05-14 01:49:27,660 - Agent - INFO - True Negatives: 230(46.65314401622718%)
-2021-05-14 01:49:27,660 - Agent - INFO - False Negatives: 5(1.0141987829614605%)
-2021-05-14 01:49:27,660 - Agent - INFO - Specificity: 0.9426229508196722
-2021-05-14 01:49:27,660 - Agent - INFO - Misclassification: 19(3.8539553752535496%)
+2021-05-23 03:45:30,490 - Agent - INFO - True Positives: 247(50.10141987829615%)
+2021-05-23 03:45:30,491 - Agent - INFO - False Positives: 10(2.028397565922921%)
+2021-05-23 03:45:30,491 - Agent - INFO - True Negatives: 230(46.65314401622718%)
+2021-05-23 03:45:30,491 - Agent - INFO - False Negatives: 6(1.2170385395537526%)
+2021-05-23 03:45:30,491 - Agent - INFO - Specificity: 0.9583333333333334
+2021-05-23 03:45:30,491 - Agent - INFO - Misclassification: 16(3.2454361054766734%)
 ```
 
 ## Metrics Overview
-| Accuracy | Recall | Precision | AUC/ROC |
+| Accuracy | Recall | Precision | F1 |
 | ---------- | ---------- | ---------- | ---------- |
-|  |  |  |  |
+| 0.9675456389452333 | 0.9675456389452333 | 0.9675456389452333 | 0.9675456389452332 |
 
 
 ## Metrics
 | Figures of merit     | Amount/Value | Percentage |
 | -------------------- | ----- | ---------- |
-| True Positives       |  | % |
-| False Positives      |  | % |
-| True Negatives       |  | % |
-| False Negatives      |  | % |
-| Misclassification    |  | % |
-| Sensitivity / Recall |    | % |
-| Specificity          |   | % |
+| True Positives       | 247 | 50.10141987829615% |
+| False Positives      | 10 | 2.028397565922921% |
+| True Negatives       | 230 | 46.65314401622718% |
+| False Negatives      | 6 | 1.2170385395537526% |
+| Misclassification    | 16 | 3.2454361054766734% |
+| Sensitivity / Recall |  0.9675456389452333  | 97% |
+| Specificity          | 0.9583333333333334  | 96% |
 
 &nbsp;
 
@@ -343,9 +359,68 @@ To run the AI Agent in test mode use the following command:
 python3 agenty.py classify
 ```
 
-You should see the following which shows you the network architecture:
+You should see the following which shows you the VGG19 network architecture:
 
 ```
+Model: "SarsCov2xDNN"
+_________________________________________________________________
+Layer (type)                 Output Shape              Param #
+=================================================================
+input_1 (InputLayer)         [(None, 224, 224, 3)]     0
+_________________________________________________________________
+block1_conv1 (Conv2D)        (None, 224, 224, 64)      1792
+_________________________________________________________________
+block1_conv2 (Conv2D)        (None, 224, 224, 64)      36928
+_________________________________________________________________
+block1_pool (MaxPooling2D)   (None, 112, 112, 64)      0
+_________________________________________________________________
+block2_conv1 (Conv2D)        (None, 112, 112, 128)     73856
+_________________________________________________________________
+block2_conv2 (Conv2D)        (None, 112, 112, 128)     147584
+_________________________________________________________________
+block2_pool (MaxPooling2D)   (None, 56, 56, 128)       0
+_________________________________________________________________
+block3_conv1 (Conv2D)        (None, 56, 56, 256)       295168
+_________________________________________________________________
+block3_conv2 (Conv2D)        (None, 56, 56, 256)       590080
+_________________________________________________________________
+block3_conv3 (Conv2D)        (None, 56, 56, 256)       590080
+_________________________________________________________________
+block3_conv4 (Conv2D)        (None, 56, 56, 256)       590080
+_________________________________________________________________
+block3_pool (MaxPooling2D)   (None, 28, 28, 256)       0
+_________________________________________________________________
+block4_conv1 (Conv2D)        (None, 28, 28, 512)       1180160
+_________________________________________________________________
+block4_conv2 (Conv2D)        (None, 28, 28, 512)       2359808
+_________________________________________________________________
+block4_conv3 (Conv2D)        (None, 28, 28, 512)       2359808
+_________________________________________________________________
+block4_conv4 (Conv2D)        (None, 28, 28, 512)       2359808
+_________________________________________________________________
+block4_pool (MaxPooling2D)   (None, 14, 14, 512)       0
+_________________________________________________________________
+block5_conv1 (Conv2D)        (None, 14, 14, 512)       2359808
+_________________________________________________________________
+block5_conv2 (Conv2D)        (None, 14, 14, 512)       2359808
+_________________________________________________________________
+block5_conv3 (Conv2D)        (None, 14, 14, 512)       2359808
+_________________________________________________________________
+block5_conv4 (Conv2D)        (None, 14, 14, 512)       2359808
+_________________________________________________________________
+block5_pool (MaxPooling2D)   (None, 7, 7, 512)         0
+_________________________________________________________________
+flatten (Flatten)            (None, 25088)             0
+_________________________________________________________________
+fc1 (Dense)                  (None, 4096)              102764544
+_________________________________________________________________
+fc2 (Dense)                  (None, 4096)              16781312
+=================================================================
+Total params: 139,570,240
+Trainable params: 139,570,240
+Non-trainable params: 0
+_________________________________________________________________
+2021-05-23 04:07:51,909 - Agent - INFO - VGG19 Model loaded
 ```
 
 Finally the application will start processing the test images and the results will be displayed in the console.
@@ -353,8 +428,32 @@ Finally the application will start processing the test images and the results wi
 <details><summary><b>View output</b></summary>
 <p>
 
-```
-```
+    2021-05-23 04:07:52,530 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.2735898494720459 seconds.
+    2021-05-23 04:07:53,012 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.2899034023284912 seconds.
+    2021-05-23 04:07:53,479 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.27687501907348633 seconds.
+    2021-05-23 04:07:53,956 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.2845020294189453 seconds.
+    2021-05-23 04:07:54,426 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.27788805961608887 seconds.
+    2021-05-23 04:07:54,904 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.28234362602233887 seconds.
+    2021-05-23 04:07:55,384 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.28928375244140625 seconds.
+    2021-05-23 04:07:55,859 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.2810978889465332 seconds.
+    2021-05-23 04:07:56,342 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.29034996032714844 seconds.
+    2021-05-23 04:07:56,813 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.27492523193359375 seconds.
+    2021-05-23 04:07:57,303 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.29724907875061035 seconds.
+    2021-05-23 04:07:57,784 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.28563737869262695 seconds.
+    2021-05-23 04:07:58,248 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.27115321159362793 seconds.
+    2021-05-23 04:07:58,735 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.2935960292816162 seconds.
+    2021-05-23 04:07:59,204 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.2771143913269043 seconds.
+    2021-05-23 04:07:59,682 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Positive) in 0.2868936061859131 seconds.
+    2021-05-23 04:08:00,163 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.28818488121032715 seconds.
+    2021-05-23 04:08:00,656 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.2862370014190674 seconds.
+    2021-05-23 04:08:01,146 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.29833269119262695 seconds.
+    2021-05-23 04:08:01,616 - Agent - INFO - SARS-CoV-2 xDNN Classifier correctly detected (True Negative) in 0.27336955070495605 seconds.
+    2021-05-23 04:08:01,616 - Agent - INFO - Images Classified: 20
+    2021-05-23 04:08:01,616 - Agent - INFO - True Positives: 10
+    2021-05-23 04:08:01,616 - Agent - INFO - False Positives: 0
+    2021-05-23 04:08:01,616 - Agent - INFO - True Negatives: 10
+    2021-05-23 04:08:01,617 - Agent - INFO - False Negatives: 0
+    2021-05-23 04:08:01,617 - Agent - INFO - Total Time Taken: 5.6785266399383545
 </p>
 </details><br />
 
@@ -374,8 +473,99 @@ This will start agent in HTTP Inference mode. The agent will loop through the te
 
 <details><summary><b>View output</b></summary>
 <p>
-```
-```
+
+    2021-05-23 04:13:24,168 - Agent - INFO - Helpers class initialization complete.
+    2021-05-23 04:13:24,168 - Agent - INFO - Agent initialization complete.
+    2021-05-23 04:13:24,168 - Agent - INFO - Data class initialization complete.
+    2021-05-23 04:13:24,168 - Agent - INFO - Model class initialization complete.
+
+    2021-05-23 04:13:24,168 - Agent - INFO - Sending request for: model/data/test/Covid (1128).png
+
+    2021-05-23 04:13:24,818 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.6492893695831299 seconds.
+
+    2021-05-23 04:13:24,818 - Agent - INFO - Sending request for: model/data/test/Non-Covid (1114).png
+
+    2021-05-23 04:13:25,307 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.4895467758178711 seconds.
+
+    2021-05-23 04:13:25,308 - Agent - INFO - Sending request for: model/data/test/Covid (371).png
+
+    2021-05-23 04:13:25,788 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.4803190231323242 seconds.
+
+    2021-05-23 04:13:25,788 - Agent - INFO - Sending request for: model/data/test/Covid (1183).png
+
+    2021-05-23 04:13:26,381 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.5924265384674072 seconds.
+
+    2021-05-23 04:13:26,381 - Agent - INFO - Sending request for: model/data/test/Non-Covid (56).png
+
+    2021-05-23 04:13:26,862 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.48140954971313477 seconds.
+
+    2021-05-23 04:13:26,862 - Agent - INFO - Sending request for: model/data/test/Non-Covid (6).png
+
+    2021-05-23 04:13:27,354 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.49121570587158203 seconds.
+
+    2021-05-23 04:13:27,354 - Agent - INFO - Sending request for: model/data/test/Non-Covid (1205).png
+
+    2021-05-23 04:13:27,848 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.4936649799346924 seconds.
+
+    2021-05-23 04:13:27,848 - Agent - INFO - Sending request for: model/data/test/Covid (329).png
+
+    2021-05-23 04:13:28,339 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.49178147315979004 seconds.
+
+    2021-05-23 04:13:28,340 - Agent - INFO - Sending request for: model/data/test/Non-Covid (822).png
+
+    2021-05-23 04:13:28,835 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.4957602024078369 seconds.
+
+    2021-05-23 04:13:28,836 - Agent - INFO - Sending request for: model/data/test/Covid (55).png
+
+    2021-05-23 04:13:29,324 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.48885297775268555 seconds.
+
+    2021-05-23 04:13:29,325 - Agent - INFO - Sending request for: model/data/test/Covid (1239).png
+
+    2021-05-23 04:13:29,821 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.4962484836578369 seconds.
+
+    2021-05-23 04:13:29,821 - Agent - INFO - Sending request for: model/data/test/Covid (552).png
+
+    2021-05-23 04:13:30,306 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.48441243171691895 seconds.
+
+    2021-05-23 04:13:30,306 - Agent - INFO - Sending request for: model/data/test/Covid (842).png
+
+    2021-05-23 04:13:30,783 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.4772377014160156 seconds.
+
+    2021-05-23 04:13:30,783 - Agent - INFO - Sending request for: model/data/test/Non-Covid (715).png
+
+    2021-05-23 04:13:31,290 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.5065999031066895 seconds.
+
+    2021-05-23 04:13:31,290 - Agent - INFO - Sending request for: model/data/test/Covid (7).png
+
+    2021-05-23 04:13:31,767 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.47717905044555664 seconds.
+
+    2021-05-23 04:13:31,767 - Agent - INFO - Sending request for: model/data/test/Covid (89).png
+
+    2021-05-23 04:13:32,265 - Agent - INFO - SARS-CoV-2 correctly detected (True Positive) in 0.4975433349609375 seconds.
+
+    2021-05-23 04:13:32,265 - Agent - INFO - Sending request for: model/data/test/Non-Covid (217).png
+
+    2021-05-23 04:13:32,753 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.48796725273132324 seconds.
+
+    2021-05-23 04:13:32,753 - Agent - INFO - Sending request for: model/data/test/Non-Covid (457).png
+
+    2021-05-23 04:13:33,244 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.49101877212524414 seconds.
+
+    2021-05-23 04:13:33,249 - Agent - INFO - Sending request for: model/data/test/Non-Covid (955).png
+
+    2021-05-23 04:13:33,743 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.4938371181488037 seconds.
+
+    2021-05-23 04:13:33,743 - Agent - INFO - Sending request for: model/data/test/Non-Covid (1164).png
+
+    2021-05-23 04:13:34,231 - Agent - INFO - SARS-CoV-2 correctly detected (True Negative) in 0.488292932510376 seconds.
+
+    2021-05-23 04:13:34,231 - Agent - INFO - Images Classified: 20
+    2021-05-23 04:13:34,231 - Agent - INFO - True Positives: 10
+    2021-05-23 04:13:34,231 - Agent - INFO - False Positives: 0
+    2021-05-23 04:13:34,232 - Agent - INFO - True Negatives: 10
+    2021-05-23 04:13:34,232 - Agent - INFO - False Negatives: 0
+    2021-05-23 04:13:34,232 - Agent - INFO - Total Time Taken: 10.054603576660156
+
 </p>
 </details><br />
 
@@ -432,7 +622,7 @@ Please read the [CONTRIBUTING](../CONTRIBUTING.md "CONTRIBUTING") document for a
 
 ## Contributors
 
-- [Nitin Mane](https://www.leukemiaairesearch.com/association/volunteers/nitin-mane "Nitin Mane") - [Asociacion De Investigatcion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") Deep Learning, Aurangabad, India
+- [Nitin Mane](https://www.leukemiaairesearch.com/association/volunteers/nitin-mane "Nitin Mane") - [Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss](https://www.leukemiaresearchassociation.ai "Asociacion De Investigacion En Inteligencia Artificial Para La Leucemia Peter Moss") Deep Learning, Aurangabad, India
 
 &nbsp;
 

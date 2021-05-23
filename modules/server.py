@@ -51,7 +51,7 @@ from flask import Flask, request, Response
 from io import BytesIO
 from PIL import Image
 from tensorflow.keras.preprocessing import image
-from tensorflow.keras.applications.vgg16 import preprocess_input
+from tensorflow.keras.applications.vgg19 import preprocess_input
 
 
 class server(AbstractServer):
@@ -69,33 +69,9 @@ class server(AbstractServer):
 			img = Image.open(BytesIO(req.data)).convert('RGB')
 
 		img = img.resize((224, 224), Image.ANTIALIAS)
-		np_img = tf.keras.preprocessing.image.img_to_array(img)
-		np_img.transpose(1, 2, 0)
-		#img = keras.preprocessing.image.img_to_array(img)
-		#img = np.array([img])  # Convert single image to a batch.
-		img = np.expand_dims(np_img, axis=0)
-		img = preprocess_input(img)
-		#prediction = self.predict(img)
-
-		#img = img.resize((224, 224), Image.ANTIALIAS)
-		#img = image.img_to_array(img)
-		#img = np.expand_dims(img, axis=0)
-		#img = preprocess_input(img)
-		#img = img.reshape((1,224,224,3))
+		img = self.model.ext_feature(img)
 
 		return self.model.predict(img)
-
-	def request(self, img_path):
-		""" Sends image to the inference API endpoint. """
-
-		self.helpers.logger.info("Sending request for: " + img_path)
-
-		_, img_encoded = cv2.imencode('.png', cv2.imread(img_path))
-		response = requests.post(
-			self.addr, data=img_encoded.tostring(), headers=self.headers)
-		response = json.loads(response.text)
-
-		return response
 
 	def start(self):
 		""" Starts the server. """
@@ -115,7 +91,6 @@ class server(AbstractServer):
 
 			message = ""
 			prediction = self.predict(request)
-			print(prediction)
 
 			if prediction == 1:
 				message = "Acute Lymphoblastic Leukemia detected!"
@@ -141,60 +116,3 @@ class server(AbstractServer):
 
 		app.run(host=self.helpers.credentials["server"]["ip"],
 				port=self.helpers.credentials["server"]["port"])
-
-	def test(self):
-		""" Tests the trained model via HTTP. """
-
-		totaltime = 0
-		files = 0
-
-		tp = 0
-		fp = 0
-		tn = 0
-		fn = 0
-
-		self.addr = "http://" + self.helpers.credentials["server"]["ip"] + \
-			':'+str(self.helpers.credentials["server"]["port"]) + '/Inference'
-		self.headers = {'content-type': 'image/jpeg'}
-
-		for testFile in os.listdir(self.model.testing_dir):
-			if os.path.splitext(testFile)[1] in self.model.valid:
-
-				start = time.time()
-				prediction = self.request(self.model.testing_dir + "/" + testFile)
-				print(prediction)
-				end = time.time()
-				benchmark = end - start
-				totaltime += benchmark
-
-				msg = ""
-				status = ""
-				outcome = ""
-
-				if prediction["Diagnosis"] == "Positive" and "Non-Covid" in testFile:
-					fp += 1
-					status = "incorrectly"
-					outcome = "(False Positive)"
-				elif prediction["Diagnosis"] == "Negative" and "Non-Covid" in testFile:
-					tn += 1
-					status = "correctly"
-					outcome = "(True Negative)"
-				elif prediction["Diagnosis"] == "Positive" and "Covid" in testFile:
-					tp += 1
-					status = "correctly"
-					outcome = "(True Positive)"
-				elif prediction["Diagnosis"] == "Negative" and "Covid" in testFile:
-					fn += 1
-					status = "incorrectly"
-					outcome = "(False Negative)"
-
-				files += 1
-				self.helpers.logger.info("COVID-19 xDNN Classifier " + status +
-									" detected " + outcome + " in " + str(benchmark) + " seconds.")
-
-		self.helpers.logger.info("Images Classified: " + str(files))
-		self.helpers.logger.info("True Positives: " + str(tp))
-		self.helpers.logger.info("False Positives: " + str(fp))
-		self.helpers.logger.info("True Negatives: " + str(tn))
-		self.helpers.logger.info("False Negatives: " + str(fn))
-		self.helpers.logger.info("Total Time Taken: " + str(totaltime))

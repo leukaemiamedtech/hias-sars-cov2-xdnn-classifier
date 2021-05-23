@@ -65,6 +65,7 @@ class data(AbstractData):
 			self.helpers.confs["data"]["train_dir"])
 		data = list(data_dir.glob(
 			'*' + self.helpers.confs["data"]["file_type"]))
+		data.sort()
 
 		images = []
 		batch = []
@@ -80,6 +81,10 @@ class data(AbstractData):
 			fname = os.path.basename(rimage)
 			label = "Non-Covid" if "Non" in fname else "Covid"
 			j = 0 if "Non" in fname else 1
+
+			self.helpers.logger.info("Processing: " + fname)
+			self.helpers.logger.info("Label: " + label)
+			self.helpers.logger.info("Class: " + str(j))
 
 			img = image.load_img(fpath, target_size=(self.dim, self.dim))
 			x = image.img_to_array(img)
@@ -155,6 +160,19 @@ class data(AbstractData):
 	def reshape(self, img):
 		""" Classifies an image sent via HTTP. """
 		pass
+
+	def ext_feature(self, img):
+		"""  Extract feature from image """
+
+		x = keras.preprocessing.image.img_to_array(img)
+		x = np.expand_dims(x, axis=0)
+		x = preprocess_input(x)
+		features = self.tf_intermediate_layer_model.predict(x)
+		test = []
+		test.append(features[0])
+		np_feature = np.array(test)
+
+		return np_feature
 
 
 
