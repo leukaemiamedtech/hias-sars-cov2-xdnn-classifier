@@ -76,7 +76,7 @@ Developers that have contributed to this repository have experience in using Art
 
 # GETTING STARTED
 
-Ready to get started ? Head over to the [Getting Started guide](documentation/getting-started.md) for instructions on how to download/install and setup the Acute Lymphoblastic Leukemia oneAPI Classifier 2021.
+Ready to get started ? Head over to the [Getting Started guide](documentation/getting-started.md) for instructions on how to download/install and setup the SARS=CoV-2 Classifier 2021.
 
 &nbsp;
 

@@ -318,7 +318,7 @@ _Fig 3. Confusion Matrix_
 2021-05-23 03:45:30,044 - Agent - INFO - Recall: 0.9675456389452333
 2021-05-23 03:45:30,045 - Agent - INFO - F1 score: 0.9675456389452332
 2021-05-23 03:45:30,047 - Agent - INFO - Cohens kappa: 0.9350182884634395
-OMP: Info #254: KMP_AFFINITY: pid 8021 tid 8021 thread 0 bound to OS proc set 0
+
 2021-05-23 03:45:30,333 - Agent - INFO - Confusion Matrix: [[230  10] [  6 247]]
 2021-05-23 03:45:30,333 - Agent - INFO - Normalized Confusion Matrix: [[0.95833333 0.04166667] [0.02371542 0.97628458]]
 
