@@ -1,18 +1,32 @@
-############################################################################################
-#
-# Project:       Peter Moss COVID-19 AI Research Project
-# Repository:    COVID-19 AI Classification
-# Project:       COVID-19 Pneumonia Detection/Early Detection
-#
-# Author:        Nitin Mane
-# Title:         Predict CT Scan on Web Page
-# Description:   Analyze the CT Scan images and predict whether they are COVID-19 or normal Scans by using Pretrained Model on a Web Page
-# License:       MIT License
-# Last Modified: 2021-05-12
-#
-# Citation: Angelov, P., & Soares, E. (2020). Towards explainable deep neural networks (xDNN). Neural Networks.
-#
-############################################################################################
+""" XDNN Class
+
+Provides the HIAS AI Model with the required required data
+processing functionality.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files(the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and / or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Citation: Angelov, P., & Soares, E. (2020). Towards explainable deep neural networks (xDNN). Neural Networks.
+
+Contributors:
+- Nitin Mane
+
+"""
 
 import math
 import numpy as np
