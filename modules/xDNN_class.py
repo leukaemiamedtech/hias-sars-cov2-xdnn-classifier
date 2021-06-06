@@ -1,8 +1,18 @@
-"""
-Please cite:
-    
-Angelov, P., & Soares, E. (2020). Towards explainable deep neural networks (xDNN). Neural Networks.
-"""
+############################################################################################
+#
+# Project:       Peter Moss COVID-19 AI Research Project
+# Repository:    COVID-19 AI Classification
+# Project:       COVID-19 Pneumonia Detection/Early Detection
+#
+# Author:        Nitin Mane
+# Title:         Predict CT Scan on Web Page
+# Description:   Analyze the CT Scan images and predict whether they are COVID-19 or normal Scans by using Pretrained Model on a Web Page
+# License:       MIT License
+# Last Modified: 2021-05-12
+#
+# Citation: Angelov, P., & Soares, E. (2020). Towards explainable deep neural networks (xDNN). Neural Networks.
+#
+############################################################################################
 
 import math
 import numpy as np
@@ -22,17 +32,17 @@ def xDNN(Input,Mode):
         Output['xDNNParms']['Parameters'] = Prototypes
         MemberLabels = {}
         for i in range(0,CN+1):
-           MemberLabels[i]=Input['Labels'][Input['Labels']==i] 
+           MemberLabels[i]=Input['Labels'][Input['Labels']==i]
         Output['xDNNParms']['CurrentNumberofClass']=CN+1
         Output['xDNNParms']['OriginalNumberofClass']=CN+1
         Output['xDNNParms']['MemberLabels']=MemberLabels
         return Output
-    
+
     elif Mode == 'Validation':
         Params=Input['xDNNParms']
         datates=Input['Features']
         Test_Results = DecisionMaking(Params,datates)
-        EstimatedLabels = Test_Results['EstimatedLabels'] 
+        EstimatedLabels = Test_Results['EstimatedLabels']
         Scores = Test_Results['Scores']
         Output = {}
         Output['EstLabs'] = EstimatedLabels
@@ -40,18 +50,18 @@ def xDNN(Input,Mode):
         Output['ConfMa'] = confusion_matrix(Input['Labels'],Output['EstLabs'])
         Output['ClassAcc'] = np.sum(Output['ConfMa']*np.identity(len(Output['ConfMa'])))/len(Input['Labels'])
         return Output
-        
+
     elif Mode == 'classify':
         Params=Input['xDNNParms']
         datates=Input['Features']
         Test_Results = DecisionMaking(Params,datates)
-        EstimatedLabels = Test_Results['EstimatedLabels'] 
+        EstimatedLabels = Test_Results['EstimatedLabels']
         Scores = Test_Results['Scores']
         Output = {}
         Output['EstLabs'] = EstimatedLabels
         Output['Scores'] = Scores
         return Output
-    
+
 def PrototypesIdentification(Image,GlobalFeature,LABEL,CL):
     data = {}
     image = {}
@@ -67,7 +77,7 @@ def PrototypesIdentification(Image,GlobalFeature,LABEL,CL):
     for i in range(0, CL+1):
         Prototypes[i] = xDNNclassifier(data[i],image[i])
     return Prototypes
-        
+
 
 def xDNNclassifier(Data,Image):
     L, N, W = np.shape(Data)
@@ -95,7 +105,7 @@ def xDNNclassifier(Data,Image):
             distance = cdist(data[i-1,].reshape(1,-1),Centre,'euclidean')[0]
         value,position= distance.max(0),distance.argmax(0)
         value=value**2
-        
+
         if DataDensity > CDmax or DataDensity < CDmin or value > 2*Radius[position]:
             Centre=np.vstack((Centre,data[i-1,]))
             Noc=Noc+1
@@ -106,7 +116,7 @@ def xDNNclassifier(Data,Image):
         else:
             Centre[position,] = Centre[position,]*(Support[position]/Support[position]+1)+data[i-1]/(Support[position]+1)
             Support[position]=Support[position]+1
-            Radius[position]=0.5*Radius[position]+0.5*(X[position,]-sum(Centre[position,]**2))/2  
+            Radius[position]=0.5*Radius[position]+0.5*(X[position,]-sum(Centre[position,]**2))/2
     dic = {}
     dic['Noc'] =  Noc
     dic['Centre'] =  Centre
@@ -116,9 +126,9 @@ def xDNNclassifier(Data,Image):
     dic['Prototype'] = VisualPrototype
     dic['L'] =  L
     dic['X'] =  X
-    return dic  
- 
-    
+    return dic
+
+
 
 def DecisionMaking(Params,datates):
     PARAM=Params['Parameters']
@@ -143,17 +153,15 @@ def DecisionMaking(Params,datates):
         indx = np.argsort(Value)[::-1]
         EstimatedLabels[i-1]=indx[0]
     LABEL1=np.zeros((CurrentNC,1))
-    
-    
-    for i in range(0,CurrentNC): 
+
+
+    for i in range(0,CurrentNC):
         LABEL1[i] = np.unique(LAB[i])
 
     EstimatedLabels = EstimatedLabels.astype(int)
-    EstimatedLabels = LABEL1[EstimatedLabels]   
+    EstimatedLabels = LABEL1[EstimatedLabels]
     dic = {}
     dic['EstimatedLabels'] = EstimatedLabels
     dic['Scores'] = Scores
     return dic
-         
-###############################################################################
 

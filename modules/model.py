@@ -89,7 +89,7 @@ class model(AbstractModel):
 
 		self.load()
 		self.tf_intermediate_layer_model = keras.Model(
-			inputs=self.model.input, outputs=self.model.get_layer(layer_name).output)
+			inputs=self.model.input, outputs=self.model.get_layer(layer_name).output, name="SarsCov2xDNN")
 
 		self.load()
 		self.tf_intermediate_layer_model.summary()
@@ -400,8 +400,7 @@ class model(AbstractModel):
 				msg = ""
 				status = ""
 				outcome = ""
-				print(prediction)
-				print(testFile)
+
 				if prediction == 1 and "Non-Covid" in testFile:
 					fp += 1
 					status = "incorrectly"
@@ -455,7 +454,6 @@ class model(AbstractModel):
 		for testFile in os.listdir(self.testing_dir):
 			if os.path.splitext(testFile)[1] in self.valid:
 
-				print(self.testing_dir + "/" + testFile)
 				start = time.time()
 				prediction = self.http_request(self.testing_dir + "/" + testFile)
 				end = time.time()
