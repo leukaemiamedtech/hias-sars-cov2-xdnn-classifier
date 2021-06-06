@@ -78,8 +78,7 @@ class AbstractModel(ABC):
 		self.helpers.logger.info("Sending request for: " + img_path)
 
 		_, img_encoded = cv2.imencode('.png', cv2.imread(img_path))
-		response = requests.post(
-			self.addr, data=img_encoded.tostring(), headers=self.headers)
+		response = requests.post(self.addr, data=img_encoded.tostring(), headers=self.headers)
 		response = json.loads(response.text)
 
 		return response

@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 Contributors:
-- Adam Milton-Barker - First version - 2021-5-1
+- Nitin Mane
 
 """
 
@@ -58,7 +58,6 @@ class agent(AbstractAgent):
 		self.model.prepare_data()
 		self.model.prepare_network()
 		self.model.train()
-		self.model.evaluate()
 
 	def set_model(self, mtype):
 
@@ -67,7 +66,7 @@ class agent(AbstractAgent):
 	def load_model(self):
 		""" Loads the trained model """
 
-		self.model.load()
+		self.model.prepare_network()
 
 	def server(self):
 		""" Loads the API server """
